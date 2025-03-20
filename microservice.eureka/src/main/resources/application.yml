@@ -8,7 +8,12 @@ spring:
     import: optional:configserver:http://localhost:8888
 
 eureka:
+  server:
+    renewal-percent-threshold: 0.85
+    eviction-interval-timer-in-ms: 60000
   instance:
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
     hostname: localhost
   client:
     register-with-eureka: false
