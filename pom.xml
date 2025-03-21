@@ -22,6 +22,10 @@
     <module>microservice.eureka</module>
     <module>microservice.config</module>
     <module>animal</module>
+    <module>microservice-adoptions</module>
+    <module>microservice-finances</module>
+    <module>microservice-health</module>
+    <module>microservice-petShop</module>
   </modules>
 
   <properties>
