@@ -1,6 +1,7 @@
 package com.romina.animal.service;
 
 import com.romina.animal.dto.AnimalDTO;
+import com.romina.animal.mappers.AnimalMapper;
 import com.romina.animal.models.Animal;
 import com.romina.animal.repository.IAnimalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,24 +15,25 @@ import java.util.stream.Collectors;
 
 @Service
 public class AnimalService {
-
     @Autowired
     IAnimalRepository animalRepository;
+    @Autowired
+    AnimalMapper animalMapper; // Inject the mapper
 
     public List<AnimalDTO> getAnimals() {
         List<Animal> animals = animalRepository.findAll();
-        return animals.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return animals.stream().map(animalMapper::animalToAnimalDTO).collect(Collectors.toList());
     }
 
     public AnimalDTO saveAnimal(AnimalDTO animalDTO) {
-        Animal animal = convertToEntity(animalDTO);
+        Animal animal = animalMapper.animalDTOtoAnimal(animalDTO);
         Animal savedAnimal = animalRepository.save(animal);
-        return convertToDTO(savedAnimal);
+        return animalMapper.animalToAnimalDTO(savedAnimal);
     }
 
     public Optional<AnimalDTO> getById(Long id) {
         Optional<Animal> optionalAnimal = animalRepository.findById(id);
-        return optionalAnimal.map(this::convertToDTO);
+        return optionalAnimal.map(animalMapper::animalToAnimalDTO);
     }
 
     public AnimalDTO updateById(AnimalDTO request, Long id) {
@@ -39,23 +41,10 @@ public class AnimalService {
 
         if (optionalAnimal.isPresent()) {
             Animal animal = optionalAnimal.get();
-
-            animal.setName(request.getName());
-            animal.setAge(request.getAge());
-            animal.setAdoptedBy(request.getAdoptedBy());
-            animal.setAdoptedDate(request.getAdoptedDate());
-            animal.setArrivalDate(request.getArrivalDate());
-            animal.setHealthCondition(request.getHealthCondition());
-            animal.setDewormed(request.getDewormed());
-            animal.setCastration(request.getCastration());
-            animal.setBirthDate(request.getBirthDate());
-            animal.setVetVisitDate(request.getVetVisitDate());
-            if (request.getImage() != null) {
-                animal.setImage(request.getImage());
-            }
-
+            // Use the mapper to update the entity fields from the DTO
+            animalMapper.updateAnimalFromDTO(request, animal);
             Animal updatedAnimal = animalRepository.save(animal);
-            return convertToDTO(updatedAnimal);
+            return animalMapper.animalToAnimalDTO(updatedAnimal);
         } else {
             throw new NoSuchElementException("Animal with ID " + id + " not found");
         }
@@ -70,37 +59,4 @@ public class AnimalService {
             return false;
         }
     }
-
-    private AnimalDTO convertToDTO(Animal animal) {
-        return AnimalDTO.builder()
-                .name(animal.getName())
-                .age(animal.getAge())
-                .arrivalDate(animal.getArrivalDate())
-                .adoptedDate(animal.getAdoptedDate())
-                .healthCondition(animal.getHealthCondition())
-                .adoptedBy(animal.getAdoptedBy())
-                .dewormed(animal.getDewormed())
-                .castration(animal.getCastration())
-                .birthDate(animal.getBirthDate())
-                .vetVisitDate(animal.getVetVisitDate())
-                .image(animal.getImage())
-                .build();
-    }
-
-    private Animal convertToEntity(AnimalDTO animalDTO) {
-        Animal animal = new Animal();
-        animal.setName(animalDTO.getName());
-        animal.setAge(animalDTO.getAge());
-        animal.setArrivalDate(animalDTO.getArrivalDate());
-        animal.setAdoptedDate(animalDTO.getAdoptedDate());
-        animal.setHealthCondition(animalDTO.getHealthCondition());
-        animal.setAdoptedBy(animalDTO.getAdoptedBy());
-        animal.setDewormed(animalDTO.getDewormed());
-        animal.setCastration(animalDTO.getCastration());
-        animal.setBirthDate(animalDTO.getBirthDate());
-        animal.setVetVisitDate(animalDTO.getVetVisitDate());
-        animal.setImage(animalDTO.getImage());
-        return animal;
-    }
 }
-
