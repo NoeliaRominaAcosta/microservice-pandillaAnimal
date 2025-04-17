@@ -21,7 +21,7 @@
     <module>microservice.gateway</module>
     <module>microservice.eureka</module>
     <module>microservice.config</module>
-    <module>animal</module>
+    <module>microservice-animal</module>
     <module>microservice-adoptions</module>
     <module>microservice-finances</module>
     <module>microservice-health</module>

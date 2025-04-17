@@ -23,8 +23,9 @@ I'm a tech enthusiastic too, always ready for challenges and eager to dive into 
 
 
 ## Documentation
+You need to start the microservice to access the swagger documentation
 
-[Swagger](https://linktodocumentation)
+[Animal](http://localhost:8090/swagger-ui/index.html)
 
 
 ## Related
