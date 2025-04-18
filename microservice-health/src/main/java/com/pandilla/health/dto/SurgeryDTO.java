@@ -1,23 +1,17 @@
-package com.pandilla.health.models;
+package com.pandilla.health.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@Entity
-@Table(name = "surgery")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Information about surgeries")
-public class Surgery {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Builder
+public class SurgeryDTO {
     //@FeignClient(name = "microservice-animal")
     private Long animalId;
     private Date surgeryDate;
@@ -28,5 +22,4 @@ public class Surgery {
     private String aftercare;
     private Long cost;
     private Boolean succesful;
-
 }
