@@ -44,11 +44,11 @@ public class animalController {
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<String> deleteAnimalById(@PathVariable("id") Long id) {
-        boolean ok = this.animalService.deleteById(id);
-        if (ok) {
-            return ResponseEntity.ok("Animal with id " + id + " is deleted");
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR deleting animal with id " + id);
-        }
+        boolean deleted = animalService.deleteById(id);
+
+        String message = "Animal with id " + id + (deleted ? " is deleted" : " could not be deleted");
+        HttpStatus status = deleted ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR;
+
+        return ResponseEntity.status(status).body(message);
     }
 }
