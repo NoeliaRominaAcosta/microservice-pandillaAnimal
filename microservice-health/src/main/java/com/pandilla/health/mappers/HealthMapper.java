@@ -13,6 +13,8 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface HealthMapper {
+
+
     MedicalRecordDTO medRecordToMedRecordDTO(MedicalRecord medicalRecord);
     MedicalRecord medRecordDTOtoMedRecord(MedicalRecordDTO medRecordDTO);
     void updateMedRecordFromDTO(MedicalRecordDTO medRecordDTO, @MappingTarget MedicalRecord medicalRecord);

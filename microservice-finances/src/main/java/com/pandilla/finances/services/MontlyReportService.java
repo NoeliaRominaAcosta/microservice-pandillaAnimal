@@ -18,35 +18,45 @@ public class MontlyReportService {
     @Autowired
     IMontlyReportRepository mrRepository;
     @Autowired
-    FinanceMapper financeMapper;
+    FinanceMapper financeMapperManual;
 
-    public List<MontlyReportDTO> getAllMontlyReports(){
+    public List<MontlyReportDTO> getAllMontlyReports() {
         List<MontlyReport> reports = mrRepository.findAll();
-        return reports.stream().map(financeMapper::montlyReportToReportDTO).collect(Collectors.toList());
+        return reports.stream()
+                .map(financeMapperManual::montlyReportToReportDTO)
+                .collect(Collectors.toList());
     }
 
-    public MontlyReportDTO saveMR(MontlyReportDTO montlyReportDTO){
-        MontlyReport mr = financeMapper.montlyReportDTOtoReport(montlyReportDTO);
-        MontlyReport saveMr = mrRepository.save(mr);
-        return financeMapper.montlyReportToReportDTO(saveMr);
+    public MontlyReportDTO saveMR(MontlyReportDTO dto) {
+        MontlyReport entity = financeMapperManual.montlyReportDTOtoReport(dto);
+        MontlyReport saved = mrRepository.save(entity);
+        return financeMapperManual.montlyReportToReportDTO(saved);
     }
-    public Optional<MontlyReportDTO> getById(Long id){
+
+
+    public Optional<MontlyReportDTO> getById(Long id) {
         Optional<MontlyReport> optionalReport = mrRepository.findById(id);
-        return optionalReport.map(financeMapper::montlyReportToReportDTO);
+        return optionalReport.map(financeMapperManual::montlyReportToReportDTO);
     }
 
-    public MontlyReportDTO updateById(MontlyReportDTO request, Long id){
-        Optional<MontlyReport> optionalDonation = mrRepository.findById(id);
-        if (optionalDonation.isPresent()){
-            MontlyReport donation = optionalDonation.get();
-            financeMapper.updateMontlyReportFromDTO(request, donation);
-            MontlyReport updateReport = mrRepository.save(donation);
-            return financeMapper.montlyReportToReportDTO(updateReport);
-        }else{
-            throw  new NoSuchElementException("Report with id " + id + " NOT FOUND");
+    public MontlyReportDTO updateById(MontlyReportDTO request, Long id) {
+        Optional<MontlyReport> optionalReport = mrRepository.findById(id);
+        if (optionalReport.isPresent()) {
+            MontlyReport report = optionalReport.get();
+
+            report.setDate(request.getDate());
+            report.setTotalExpences(request.getTotalExpences());
+            report.setTotalDonations(request.getTotalDonations());
+            report.setBalance(request.getBalance());
+            report.setGeneratedDate(request.getGeneratedDate());
+
+            MontlyReport updatedReport = mrRepository.save(report);
+
+            return financeMapperManual.montlyReportToReportDTO(updatedReport);
+        } else {
+            throw new NoSuchElementException("Report with id " + id + " NOT FOUND");
         }
     }
-
     public Boolean deleteById(Long id){
         try {
             mrRepository.deleteById(id);

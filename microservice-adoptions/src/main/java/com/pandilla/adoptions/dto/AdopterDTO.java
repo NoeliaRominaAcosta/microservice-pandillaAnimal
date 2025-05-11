@@ -18,6 +18,7 @@ import java.sql.Date;
 @AllArgsConstructor
 @Builder
 public class AdopterDTO {
+    private Long id;
     private String name;
     private Date adoptionDate;
     @Enumerated(EnumType.STRING)

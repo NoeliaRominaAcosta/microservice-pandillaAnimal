@@ -14,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class AnimalDTO {
+    private Long id;
     private String name;
     private int age;
     private Date arrivalDate;

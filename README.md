@@ -26,8 +26,9 @@ I'm a tech enthusiastic too, always ready for challenges and eager to dive into 
 You need to start the microservice to access the swagger documentation
 
 [Animal](http://localhost:8090/swagger-ui/index.html)
-
-
+[Adoptions](http://localhost:8091/swagger-ui/index.html)
+[Reports](http://localhost:8092/swagger-ui/index.html)
+[Medical records](http://localhost:8093/swagger-ui/index.html)
 ## Related
 
 Here is the related project to frontend pandilla

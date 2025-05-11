@@ -14,36 +14,69 @@ import java.util.stream.Collectors;
 
 @Service
 public class ExpenseService {
+
     @Autowired
     IExpenseRepository iExpenseRepository;
-    @Autowired
-    FinanceMapper financeMapper;
 
-    public List<ExpenseDTO> getExpenses(){
-        List<Expense>expenses= iExpenseRepository.findAll();
-        return expenses.stream().map(financeMapper::expenseToExpenseDTO).collect(Collectors.toList());
+    @Autowired
+    FinanceMapper financeMapperManual;
+
+    // Obtener todas las expenses
+    public List<ExpenseDTO> getExpenses() {
+        List<Expense> expenses = iExpenseRepository.findAll();
+        return expenses.stream()
+                .map(expense -> financeMapperManual.expenseToExpenseDTO(expense))
+                .collect(Collectors.toList());
     }
-    public ExpenseDTO saveExpense(ExpenseDTO expenseDTO){
-        Expense expense = financeMapper.expenseDTOtoExpense(expenseDTO);
-        Expense saveExpense = iExpenseRepository.save(expense);
-        return financeMapper.expenseToExpenseDTO(saveExpense);
+
+    // Guardar una nueva expense
+    public ExpenseDTO saveExpense(ExpenseDTO expenseDTO) {
+        // Mapeo manual de DTO a entidad
+        Expense expense = new Expense();
+        expense.setDate(expenseDTO.getDate());
+        expense.setDescription(expenseDTO.getDescription());
+        expense.setAmount(expenseDTO.getAmount());
+        expense.setCategory(expenseDTO.getCategory());
+        expense.setApprovedBy(expenseDTO.getApprovedBy());
+
+        // Guardamos la expense
+        Expense savedExpense = iExpenseRepository.save(expense);
+
+        // Mapeo manual de la entidad a DTO
+        return financeMapperManual.expenseToExpenseDTO(savedExpense);
     }
-    public Optional <ExpenseDTO> getById(Long id){
+
+    // Obtener una expense por id
+    public Optional<ExpenseDTO> getById(Long id) {
         Optional<Expense> optionalExpense = iExpenseRepository.findById(id);
-        return optionalExpense.map(financeMapper::expenseToExpenseDTO);
+        return optionalExpense.map(financeMapperManual::expenseToExpenseDTO);
     }
-    public ExpenseDTO updateById(ExpenseDTO request, Long id){
+
+    // Actualizar una expense por id
+    public ExpenseDTO updateById(ExpenseDTO request, Long id) {
         Optional<Expense> originalExpense = iExpenseRepository.findById(id);
-        if (originalExpense.isPresent()){
+        if (originalExpense.isPresent()) {
             Expense expense = originalExpense.get();
-            financeMapper.updateExpenseFromDTO(request, expense);
-            Expense updateExpense = iExpenseRepository.save(expense);
-            return financeMapper.expenseToExpenseDTO(updateExpense);
-        }else{
-            throw  new NoSuchElementException("Expense with id " + id + " NOT FOUND");
+
+            // Mapeo manual de DTO a entidad (actualizando los valores)
+            expense.setDate(request.getDate());
+            expense.setDescription(request.getDescription());
+            expense.setAmount(request.getAmount());
+            expense.setCategory(request.getCategory());
+            expense.setApprovedBy(request.getApprovedBy());
+
+            // Guardamos la entidad actualizada
+            Expense updatedExpense = iExpenseRepository.save(expense);
+
+            // Mapeo manual de la entidad actualizada a DTO
+            return financeMapperManual.expenseToExpenseDTO(updatedExpense);
+        } else {
+            throw new NoSuchElementException("Expense with id " + id + " NOT FOUND");
         }
     }
-    public Boolean deleteById(Long id){
+
+    // Eliminar una expense por id
+    public Boolean deleteById(Long id) {
         try {
             iExpenseRepository.deleteById(id);
             return true;
