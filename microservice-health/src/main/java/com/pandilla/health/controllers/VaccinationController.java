@@ -28,19 +28,19 @@ public class VaccinationController {
         return new ResponseEntity<>(savedVac, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/{id}")
     public ResponseEntity<VaccinationDTO> getVacById(@PathVariable Long id){
         Optional<VaccinationDTO> vacDTO = this.service.getVacById(id);
         return vacDTO.map(ResponseEntity::ok).orElseGet(()-> ResponseEntity.notFound().build());
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<VaccinationDTO> updateVac(@RequestBody VaccinationDTO vacDto, @PathVariable("id") Long id){
         VaccinationDTO updatedDTO = this.service.updateById(vacDto,id);
         return ResponseEntity.ok(updatedDTO);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteVacById(@PathVariable("id") Long id){
         boolean deleted = service.deleteById(id);
         String message = "Vaccine deleted with id " + id + (deleted ? " is deleted " : " could not be deleted");
