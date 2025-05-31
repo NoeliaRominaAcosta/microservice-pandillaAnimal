@@ -1,10 +1,7 @@
 package com.pandilla.petShop.controllers;
 
 import com.pandilla.petShop.dto.SaleDTO;
-import com.pandilla.petShop.models.Sale;
 import com.pandilla.petShop.services.SalesService;
-import jakarta.ws.rs.Path;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
