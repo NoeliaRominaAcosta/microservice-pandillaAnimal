@@ -1,0 +1,7 @@
+spring.application.name=api-gateway
+spring.cloud.gateway.discovery.locator.enabled=true
+eureka.instance.instance-id=${spring.application.name}:${random.uuid}
+spring.cloud.loadbalancer.ribbon.enabled=false
+spring.cloud.gateway.routes[0].id=animal-microservice
+spring.cloud.gateway.routes[0].uri=lb://MSVC-ANIMAL
+spring.cloud.gateway.routes[0].predicates[0]=animals/**
