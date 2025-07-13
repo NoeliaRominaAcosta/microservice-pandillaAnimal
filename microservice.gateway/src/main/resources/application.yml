@@ -1,7 +1,85 @@
-spring.application.name=api-gateway
-spring.cloud.gateway.discovery.locator.enabled=true
-eureka.instance.instance-id=${spring.application.name}:${random.uuid}
-spring.cloud.loadbalancer.ribbon.enabled=false
-spring.cloud.gateway.routes[0].id=animal-microservice
-spring.cloud.gateway.routes[0].uri=lb://MSVC-ANIMAL
-spring.cloud.gateway.routes[0].predicates[0]=animals/**
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        # Microservicio de Animales
+        - id: msvc-animal
+          uri: lb://msvc-animal
+          predicates:
+            - Path=/api/animals/**
+          filters:
+            - StripPrefix=2
+
+        # Microservicio de Adopciones
+        - id: msvc-adoptions
+          uri: lb://msvc-adoptions
+          predicates:
+            - Path=/api/adoptions/**
+          filters:
+            - StripPrefix=2
+
+        # Microservicio de Finanzas
+        - id: msvc-finances
+          uri: lb://msvc-finances
+          predicates:
+            - Path=/api/finances/**
+          filters:
+            - StripPrefix=2
+
+        # Microservicio de Salud
+        - id: msvc-health
+          uri: lb://msvc-health
+          predicates:
+            - Path=/api/health/**
+          filters:
+            - StripPrefix=2
+
+        # Microservicio de PetShop
+        - id: msvc-petshop
+          uri: lb://msvc-petShop
+          predicates:
+            - Path=/api/petshop/**
+          filters:
+            - StripPrefix=2
+
+      # Configuración global de CORS
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+              - OPTIONS
+            allowedHeaders: "*"
+
+      # Configuración del descubrimiento de servicios
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+# Configuración de Eureka Client
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
+
+# Configuración de logging
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG

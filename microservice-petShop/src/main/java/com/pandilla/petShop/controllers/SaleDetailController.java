@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/SalesDetails")
 public class SaleDetailController {
     @Autowired
     private SalesDetailsService service;
